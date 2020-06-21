@@ -1,14 +1,16 @@
 package weekOne
+
+
 import common.MongoConnectionBuilder._
 import org.mongodb.scala.{AggregateObservable, Document, MongoCollection, Observable}
-import common.Helpers._
-import org.mongodb.scala.bson.conversions.Bson
+import org.mongodb.scala.model.{Sorts,Filters}
 import org.mongodb.scala.model.Aggregates._
+import common.Helpers._
 object Transformation {
 
   val movieCollection: MongoCollection[Document] = getCollection("movies_initial")
 
-  def executePipeline(implicit collection:MongoCollection[Document]):Unit = {
+  def executePipeline(implicit collection:MongoCollection[Document]):AggregateObservable[Document] = {
 
     val pipeline = Seq(limit(100),
       project(Document(
@@ -43,14 +45,27 @@ object Transformation {
 
     )
 
-    collection.aggregate(pipeline).printResults()
+    collection.aggregate(pipeline)
 
   }
 
-  def getPipelineWithAggregate(pipeline:Seq[Bson])(implicit collection: MongoCollection[Document]): AggregateObservable[Document] = {
+  def getPipelineWithAggregate(implicit collection: MongoCollection[Document]): AggregateObservable[Document] = {
+
+    val pipeline = Seq(
+      limit(100),
+      project(Document(
+        """{
+          |'title':1
+          |}""".stripMargin))
+    )
     collection.aggregate(pipeline)
   }
 
-
+  def getTopTenIMDBMovies(implicit collection: MongoCollection[Document]):Observable[Document] = {
+    collection
+      .find()
+      .filter(Filters.equal("rated", "9.1"))
+      .projection(Document("{'title':1}")).sort(Sorts.descending("rated")).limit(10)
+  }
 
 }
