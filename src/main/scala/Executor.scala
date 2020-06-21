@@ -1,10 +1,12 @@
 import common.MongoConnectionBuilder._
+import org.mongodb.scala.MongoCollection
+import org.mongodb.scala.bson.collection.immutable.Document
 import weekOne.Transformation
 object Executor extends App {
 
-  val movieCollection = getDatabase.getCollection("movies_initial")
+  implicit val movieCollection:MongoCollection[Document] = getDatabase.getCollection("movies_initial")
 
-  Transformation.projectionOne(movieCollection)
+  Transformation.executePipeline
 
   closeConnection
 

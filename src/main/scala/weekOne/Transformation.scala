@@ -1,13 +1,14 @@
 package weekOne
 import common.MongoConnectionBuilder._
-import org.mongodb.scala.{Document, MongoCollection, Observable}
+import org.mongodb.scala.{AggregateObservable, Document, MongoCollection, Observable}
 import common.Helpers._
+import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Aggregates._
 object Transformation {
 
-  val movieCollection = getCollection("movies_initial")
+  val movieCollection: MongoCollection[Document] = getCollection("movies_initial")
 
-  def projectionOne(collection:MongoCollection[Document]):Unit = {
+  def executePipeline(implicit collection:MongoCollection[Document]):Unit = {
 
     val pipeline = Seq(limit(100),
       project(Document(
@@ -36,12 +37,18 @@ object Transformation {
           |            'type': 1,
           |            'lastUpdated': "$lastupdated"
           |
-          |}""".stripMargin))
+          |}""".stripMargin)),
+
+      out("movies_scratch")
 
     )
 
-    collection.aggregate(pipeline).printHeadResult()
+    collection.aggregate(pipeline).printResults()
 
+  }
+
+  def getPipelineWithAggregate(pipeline:Seq[Bson])(implicit collection: MongoCollection[Document]): AggregateObservable[Document] = {
+    collection.aggregate(pipeline)
   }
 
 

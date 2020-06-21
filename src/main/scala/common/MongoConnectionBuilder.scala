@@ -22,9 +22,11 @@ object MongoConnectionBuilder {
     db
   }
 
-  def getCollection(collectionName:String):MongoCollection[Document] = getDatabase.getCollection(collectionName)
+  def getCollection(collectionName:String):MongoCollection[Document] = {
+    getDatabase.getCollection(collectionName)
+  }
 
-  def closeConnection = {
+  def closeConnection:Unit = {
     createConnection.close()
     println("connection closed :)")
   }
