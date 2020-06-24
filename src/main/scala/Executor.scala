@@ -7,9 +7,9 @@ object Executor extends App {
 
   implicit val movieCollection:MongoCollection[Document] = getDatabase.getCollection("movies_initial")
 
-  //Transformation.executePipeline.printResults()
+  Transformation.executePipeline.printResults()
 
-  //Transformation.getPipelineWithAggregate.printResults()
+  Transformation.getPipelineWithAggregate.printResults()
 
   Transformation.getTopTenIMDBMovies.printResults()
 
