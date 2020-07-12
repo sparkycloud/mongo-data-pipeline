@@ -1,17 +1,10 @@
 import common.MongoConnectionBuilder._
 import common.Helpers._
-import org.mongodb.scala.MongoCollection
-import org.mongodb.scala.bson.collection.immutable.Document
-import weekOne.Transformation
-object Executor extends App {
-
-  implicit val movieCollection:MongoCollection[Document] = getDatabase.getCollection("movies_initial")
-
-  Transformation.executePipeline.printResults()
-
-  Transformation.getPipelineWithAggregate.printResults()
-
-  Transformation.getTopTenIMDBMovies.printResults()
+import common.Constants
+import weekTwo.Projections._
+object Executor extends App  {
+ projection("movies_initial",pipeline1)
+ projection("movies_initial",pipeline_date_cast)
 
   closeConnection
 

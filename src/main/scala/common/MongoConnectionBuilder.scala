@@ -8,7 +8,7 @@ import scala.util.{Failure, Success, Try}
 object MongoConnectionBuilder {
 
   def createConnection:MongoClient = {
-    val client:MongoClient = Try(MongoClient(Constants.LOCALHOST)) match {
+    val client:MongoClient = Try(MongoClient(s"${Constants.LOCALHOST}")) match {
       case Success(v) => v
       case Failure(e) => println("Db not found")
         throw new Exception(e)
@@ -18,7 +18,7 @@ object MongoConnectionBuilder {
 
   def getDatabase:MongoDatabase = {
 
-    val db = createConnection.getDatabase(Constants.DB)
+    val db = createConnection.getDatabase(Constants.LOCALDB)
     db
   }
 
